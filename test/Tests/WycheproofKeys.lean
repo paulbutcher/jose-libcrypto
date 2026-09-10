@@ -5,19 +5,19 @@ Released under Apache 2.0 license as described in the file LICENSE.
 module
 
 public import Tests.Driver
-public import Tests.WycheproofKeyVectors
+public import Wycheproof.Keys
 
 /-!
-Project Wycheproof's JSON Web Key suite. Each case is a key set and a token, and what it asks is
-whether reading that set and checking that token should succeed. A set this library refuses outright
-and one it reads but finds no usable key in are the same answer here, which is what the suite is
-asking about.
+Project Wycheproof's JSON Web Key suite, from the same package. Each case is a key set and a token,
+and what it asks is whether reading that set and checking that token should succeed. A set this
+library refuses outright and one it reads but finds no usable key in are the same answer here, which
+is what the suite is asking about.
 -/
 
 public section
 
 namespace Tests.WycheproofKeys
-open Jose Tests.Driver
+open Jose Tests.Driver Wycheproof.Keys
 
 /-- Where this backend answers against the suite, on purpose. `leancrypto` refuses an RSA modulus
 below 2048 bits, which is what makes `Backend.pure` reject case 8; OpenSSL has no such minimum, and

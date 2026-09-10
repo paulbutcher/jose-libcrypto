@@ -61,12 +61,12 @@ Checked against published vectors, not proved:
 
 - RFC 7515 A.3 and A.4 verify, and return the payloads those appendices sign. These are the ECDSA vectors `jose` could not run. A.4 is P-521, whose coordinates are 66 bytes while its digest is 64, so it is the one that catches a width taken from the digest.
 - RFC 8037 §A.4 verifies, and is reproduced byte for byte from the private key of §A.1, which Ed25519 being deterministic makes a stronger check than a round trip.
-- Project Wycheproof's JSON Web Signature suite, 393 of its 401 cases, and its JSON Web Key suite, all 26. The 39 cases `jose` leaves out for having no ECDSA are run here; the eight that remain outside are recorded, with the reason, in the file that generates them.
+- Project Wycheproof's JSON Web Signature suite, 393 of its 401 cases, and its JSON Web Key suite, 25 of its 26. The vectors are `jose`'s `wycheproof` package, which both suites read, so the 39 cases that one skips for having no ECDSA are run here against the same list rather than against a copy of it. What is left out is recorded where it is decided: six signature cases and one key case in the vectors, because no library can meet their stated results, and the `ES521` groups in the runner, because no RFC names that algorithm.
 
 Checked against constructed inputs:
 
 - Every vector above is checked again with a bit flipped in the signature, in the payload, and in the header, and refused each time.
-- On every Wycheproof case `jose` already runs, `Backend.libcrypto` and `Backend.pure` return the same answer, reason included, case by case. The two share no code below `Jose.Alg`. Where they are known to differ, they are required to differ, so nobody can quietly bring them together: see the note in `Tests.WycheproofKeys`.
+- On every Wycheproof case `jose` already runs, `Backend.libcrypto` and `Backend.pure` return the same answer, reason included, case by case. The two share no code below `Jose.Alg`, and read the same vectors, so that claim is the whole list rather than as much of it as two generators still agree on. Where they are known to differ, they are required to differ, so nobody can quietly bring them together: see the note in `Tests.WycheproofKeys`.
 - Each of `RS*`, `PS*` and `HS*` signs a token that `Backend.pure` then verifies, so that round trip crosses two implementations. Each of `ES*` signs a pair of coordinates of its curve's width, which verify here, since `Backend.pure` has no ECDSA to return to.
 - A key of the wrong kind for an algorithm is refused for the kind, a public key offered as a private one is refused, and bytes that are not a `PrivateKeyInfo` are refused.
 - Ten thousand keys are prepared and dropped, and the resident size does not climb, which is what says the `EVP_PKEY` finalizers run.
@@ -80,4 +80,4 @@ Not established either way:
 
 ## Building
 
-`lake build` builds the library; `lake test` runs the suite, which lives in a subproject of its own so that nothing it needs reaches a downstream consumer. `test/tools/Wycheproof.lean` regenerates the vectors from Project Wycheproof's own JSON; it is `jose`'s generator with the list of algorithms to leave out taken from the command line.
+`lake build` builds the library; `lake test` runs the suite, which lives in a subproject of its own so that nothing it needs reaches a downstream consumer. The Wycheproof vectors come from `jose`'s `wycheproof` package, which requires nothing and is taken here by git subdirectory, so regenerating them from Project Wycheproof's JSON happens once, there.

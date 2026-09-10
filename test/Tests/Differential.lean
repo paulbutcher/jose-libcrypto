@@ -6,13 +6,15 @@ module
 
 public import Tests.Driver
 public import Tests.WycheproofKeys
-public import Tests.WycheproofVectors
+public import Wycheproof.Keys
+public import Wycheproof.Signatures
 
 /-!
 Every Wycheproof case `jose` already runs, put to both backends and required to come back the same.
 Neither is compared with the suite's own answer here, which the two files above do; what this adds
 is that implementations sharing no code below `Jose.Alg` agree case by case, so a disagreement names
-which of them to look at.
+which of them to look at. Both suites read the same vector package, so "the cases `jose` runs" is
+the same list here as there rather than a copy of it that could drift.
 
 A set holding an elliptic curve key is left out, because `Backend.pure` refuses every algorithm
 such a key is for, which is the one place the two are meant to differ by design.
@@ -57,17 +59,18 @@ private def check (agreeing : Bool) (native lean : Except Error ByteArray) : IO 
 
 def cases : IO (Array Tests.Case) := do
   let mut result : Array Tests.Case := #[]
-  for group in Tests.Wycheproof.groups do
+  for group in Wycheproof.Signatures.groups do
     let document := "{\"keys\":[" ++ group.key ++ "]}"
     let lean := pureKeys document
     if sharedWithPure lean then
       let native ← Tests.Driver.keySet document
+      let alg := group.alg.getD "no alg"
       for vector in group.cases do
         result := result.push {
-          name := s!"agreement {group.comment} {group.alg} {vector.id}",
+          name := s!"agreement {group.comment} {alg} {vector.id}",
           run := check true (← Tests.Driver.verify native vector.jws)
             (Pure.verify Tests.Driver.policy lean vector.jws) }
-  for group in Tests.WycheproofKeys.groups do
+  for group in Wycheproof.Keys.groups do
     let lean := pureKeys group.keys
     if sharedWithPure lean then
       let native ← Tests.Driver.keySet group.keys
