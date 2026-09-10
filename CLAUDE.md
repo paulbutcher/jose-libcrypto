@@ -10,6 +10,11 @@ Guidance for Claude Code, and any other coding agent, working in this repo. Cont
 - Before considering a task complete, run `lake build` and `lake test` from the repo root as the final ground truth.
 - All Lean code must compile without warnings; the build treats warnings as errors.
 
+## Module names
+
+- Nothing here may be named under `Jose.`. Lake gives a library every module beneath its root, so `jose` owns that whole tree, and a module here carrying that prefix resolves to two packages and fails to build. The module root is `JoseLibcrypto`; the namespace it declares is `Jose.Libcrypto`.
+- `Backend.libcrypto` carries `@[expose]`, because a consumer passing a `PreparedKey` to `Jws.token` needs `Backend.libcrypto.PreparedKey` to unfold. A definition a caller has to see through needs it, and the suite is `module` throughout so that a missing one fails here rather than downstream.
+
 ## Commenting
 
 - Only add a comment which says something the source does not already say. This includes file and function headers: omit them unless they earn their place.
@@ -44,7 +49,7 @@ Applies to comments, documentation, and replies.
 
 - If asked a question, JUST answer it. Don't take a question as an instruction or a recommendation; take it literally, answer it, and stop.
 - Make no source control changes unless explicitly asked: no commits, pushes, pulls, or pull requests.
-- Never install OS packages; ask first. This does not apply to Lean packages, which are declared in the lakefile and the manifest.
+- Never install OS packages; ask first. This does not apply to Lean packages, which are declared in the lakefile and the manifest. OpenSSL 3 and `pkg-config` are already required to build at all.
 - Instructions written for another agent should assume a fresh checkout of the library in question, not the copies under `.lake`.
 
 ## Libraries

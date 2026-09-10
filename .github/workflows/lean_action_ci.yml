@@ -11,4 +11,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+      # Which algorithms this backend can perform is a property of whichever OpenSSL
+      # the runner happens to carry, so the suite's verdict is only readable beside it.
+      - name: Record the OpenSSL being linked
+        run: |
+          pkg-config --modversion libcrypto
+          openssl version -a
       - uses: leanprover/lean-action@v1

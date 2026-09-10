@@ -1,6 +1,0 @@
-name = "jose-libcrypto"
-version = "0.1.0"
-defaultTargets = ["JoseLibcrypto"]
-
-[[lean_lib]]
-name = "JoseLibcrypto"
