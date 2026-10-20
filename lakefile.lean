@@ -10,7 +10,7 @@ require jose from git "https://github.com/paulbutcher/lean-jose" @ "v0.2.2"
 require «lean-libcrypto» from git "https://github.com/paulbutcher/lean-libcrypto" @ "v0.2.1"
 
 package «jose-libcrypto» where
-  version := v!"0.1.1"
+  version := v!"0.1.2"
   leanOptions := #[
     ⟨`autoImplicit, false⟩,
     ⟨`relaxedAutoImplicit, false⟩,
