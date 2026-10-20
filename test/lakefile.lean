@@ -7,7 +7,7 @@ open Lake DSL
 
 require «jose-libcrypto» from ".."
 
-require wycheproof from git "https://github.com/paulbutcher/lean-jose" @ "v0.2.1" / "vectors"
+require wycheproof from git "https://github.com/paulbutcher/lean-jose" @ "v0.2.2" / "vectors"
 
 package «jose-libcrypto-test» where
   leanOptions := #[
