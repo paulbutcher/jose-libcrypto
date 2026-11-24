@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0 - 2026-11-24
+
+- Breaking: requires Lean `v4.36.0`; consumers must move to that toolchain.
+
 ## 0.1.2 - 2026-10-20
 
 - Chore: bump dependencies.
